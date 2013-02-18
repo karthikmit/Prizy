@@ -22,7 +22,7 @@ class NormalIdealPriceCalculation implements IdealPriceCalculationStrategy{
             return avgprice + (0.2 * avgprice);
         }
         else {
-            return null;
+            return 0.0;
         }
     }
 }
