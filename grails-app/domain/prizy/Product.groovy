@@ -5,10 +5,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder
 class Product implements Serializable{
 
     static constraints = {
-        store()
-        barcode()
+        store(blank: false, maxSize: 25)
+        barcode(blank: false, maxSize: 30)
         price()
-        notes()
+        notes(nullable: true)
     }
 
     static mapping = {

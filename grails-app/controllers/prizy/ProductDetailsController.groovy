@@ -1,6 +1,7 @@
 package prizy
 
 import org.springframework.dao.DataIntegrityViolationException
+import prizy.service.ProductDetailsFetcher
 
 class ProductDetailsController {
 
@@ -14,9 +15,10 @@ class ProductDetailsController {
     def show() {
         String barcode = params.get("barcode")
         def productDetailsInstance = new ProductDetailsFetcher().getProductDetails(barcode);
+
         if (!productDetailsInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productDetails.label', default: 'ProductDetails'), id])
-            redirect(action: "list")
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productDetails.label', default: 'ProductDetails'), barcode])
+            //redirect(action: "list")
             return
         }
 

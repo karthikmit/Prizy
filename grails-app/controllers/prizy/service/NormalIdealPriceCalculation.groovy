@@ -21,5 +21,8 @@ class NormalIdealPriceCalculation implements IdealPriceCalculationStrategy{
             def avgprice = totalPrice / copyPrices.size()
             return avgprice + (0.2 * avgprice);
         }
+        else {
+            return null;
+        }
     }
 }

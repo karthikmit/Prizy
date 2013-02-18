@@ -17,15 +17,17 @@ class ProductDetailsFetcher {
 
     }
 
-    void fetchProductDetails(String barcode, ProductDetails productDetails) {
+    def fetchProductDetails(String barcode) {
         List<Double> prices = getAllPricesFor(barcode);
         Collections.sort(prices);
 
         println "totalcount" + prices.size()
 
         if (prices.size() <= 0) {
-            return;
+            return null;
         }
+
+        ProductDetails productDetails = new ProductDetails();
 
         productDetails.highPrice = prices.get(prices.size() - 1);
         productDetails.lowPrice = prices.get(0);
@@ -36,6 +38,8 @@ class ProductDetailsFetcher {
 
         // TODO Fetch from prod info table
         productDetails.productDec = ProductInfo.findByBarcode(barcode).productName
+
+        return productDetails;
 
     }
 
@@ -58,22 +62,22 @@ class ProductDetailsFetcher {
     List<Double> getAllPricesFor(String barcodeIn) {
         List<Double> pricesList = new ArrayList<>();
 
+        if (barcodeIn == null) {
+            return pricesList;
+        }
+
         // Get all prices from Product table and populate in the List.
-        // TODO Fetch only relevant records.
-        def allProducts = Product.all;
-        for(Product prod : allProducts) {
-            if (prod.barcode == barcodeIn) {
-                pricesList.add(prod.price);
-            }
+        def allProducts = Product.findAllByBarcode(barcodeIn);
+        for(Product product : allProducts) {
+            pricesList.add(product.price)
         }
 
         return pricesList;
     }
 
     def getProductDetails(String barcode) {
-        ProductDetails prodDetails = new ProductDetails();
-
-        fetchProductDetails(barcode, prodDetails);
+        println "Barcode is " + barcode
+        ProductDetails prodDetails = fetchProductDetails(barcode);
 
         return prodDetails
     }
