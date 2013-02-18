@@ -24,6 +24,7 @@ class ProductLoaderController {
 
         def doesBarcodeExist = doesBarcodeExist(params.get("barcode"))
         if (false == doesBarcodeExist) {
+            println "Barcode doesn't exist"
             flash.message = message(code: 'default.create.unknown.barcode.error', args: [productLoaderInstance.barcode])
             render(view: "create", model: [productLoaderInstance: productLoaderInstance])
             return
@@ -31,7 +32,7 @@ class ProductLoaderController {
 
         try {
             if (!productLoaderInstance.save(flush: true)) {
-
+                println "Save failed"
                 render(view: "create", model: [productLoaderInstance: productLoaderInstance])
                 return
             }
@@ -60,7 +61,7 @@ class ProductLoaderController {
 
         def productLoaderInstance = Product.findByBarcodeAndStore(barcode, store);
         if (!productLoaderInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productLoader.label', default: 'Product'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productLoader.label', default: 'Product'), barcode])
             redirect(action: "list")
             return
         }
@@ -73,7 +74,7 @@ class ProductLoaderController {
         String store = params.get("store")
         def productLoaderInstance = Product.findByBarcodeAndStore(barcode, store);
         if (!productLoaderInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productLoader.label', default: 'Product'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productLoader.label', default: 'Product'), barcode])
             redirect(action: "list")
             return
         }
@@ -88,7 +89,7 @@ class ProductLoaderController {
         def productLoaderInstance = Product.findByBarcodeAndStore(barcode, store);
 
         if (!productLoaderInstance) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productLoader.label', default: 'Product'), id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'productLoader.label', default: 'Product'), barcode])
             redirect(action: "list")
             return
         }

@@ -3,11 +3,14 @@ package prizy
 import grails.test.mixin.*
 
 @TestFor(ProductLoaderController)
-@Mock(Product)
+@Mock([Product, ProductInfo])
 class ProductLoaderControllerTests {
 
     def populateValidParams(params) {
-        assert params != null
+        params["barcode"] = "testbarcode123"
+        params["store"] = "store"
+        params["price"] = "100.0"
+        params["notes"] = "Hllo"
         // TODO: Populate valid properties like...
         //params["name"] = 'someValidName'
     }
@@ -35,6 +38,7 @@ class ProductLoaderControllerTests {
         controller.save()
 
         assert model.productLoaderInstance != null
+        assert controller.flash.message != null
         assert view == '/productLoader/create'
 
         response.reset()
@@ -42,9 +46,9 @@ class ProductLoaderControllerTests {
         populateValidParams(params)
         controller.save()
 
-        assert response.redirectedUrl == '/productLoader/show/1'
+        // Will fail as Barcode wouldn't exist, Flow would be further tested in Integration.
         assert controller.flash.message != null
-        assert Product.count() == 1
+        assert Product.count() == 0
     }
 
     void testShow() {
@@ -58,7 +62,7 @@ class ProductLoaderControllerTests {
 
         assert productLoader.save() != null
 
-        params.id = productLoader.id
+        params.barcode = productLoader.barcode
 
         def model = controller.show()
 
@@ -76,7 +80,7 @@ class ProductLoaderControllerTests {
 
         assert productLoader.save() != null
 
-        params.id = productLoader.id
+        params.barcode = productLoader.barcode
 
         def model = controller.edit()
 
@@ -96,36 +100,12 @@ class ProductLoaderControllerTests {
 
         assert productLoader.save() != null
 
-        // test invalid parameters in update
-        params.id = productLoader.id
-        //TODO: add invalid values to params object
-
-        controller.update()
-
-        assert view == "/productLoader/edit"
-        assert model.productLoaderInstance != null
-
-        productLoader.clearErrors()
-
         populateValidParams(params)
         controller.update()
 
-        assert response.redirectedUrl == "/productLoader/show/$productLoader.id"
+        assert response.redirectedUrl.startsWith("/productLoader/show");
         assert flash.message != null
 
-        //test outdated version number
-        response.reset()
-        productLoader.clearErrors()
-
-        populateValidParams(params)
-        params.id = productLoader.id
-        params.version = -1
-        controller.update()
-
-        assert view == "/productLoader/edit"
-        assert model.productLoaderInstance != null
-        assert model.productLoaderInstance.errors.getFieldError('version')
-        assert flash.message != null
     }
 
     void testDelete() {
@@ -141,7 +121,7 @@ class ProductLoaderControllerTests {
         assert productLoader.save() != null
         assert Product.count() == 1
 
-        params.id = productLoader.id
+        params.barcode = productLoader.barcode
 
         controller.delete()
 

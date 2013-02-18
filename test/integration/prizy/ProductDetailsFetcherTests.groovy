@@ -1,7 +1,5 @@
 package prizy
 
-import grails.test.mixin.Mock
-import grails.test.mixin.TestMixin
 import org.junit.Test
 import prizy.service.ProductDetailsFetcher
 
